@@ -1,28 +1,26 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import CardList from './components/container/CardList'
+import './css/App.css'
 
 class App extends Component {
-  render() {
+
+  state = { 
+    cards: ['apple','pear','orange','kiwi', 'Starfruit',
+            'Mango', 'Pineapple', 'Guava','Tangerine','apple','pear','orange','kiwi'] }
+
+  render () {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+      <div className='App'>
+        <header className='App-header'>
+        Card Lister
         </header>
+        <div className='cards-container'>
+          <CardList cards={this.state.cards}/>
+        </div>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App

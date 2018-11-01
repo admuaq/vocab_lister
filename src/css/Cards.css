@@ -1,0 +1,20 @@
+.card-list {
+    height: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* position: relative; */
+    /* padding: 1%; */
+    align-content: space-around;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-color: black;
+}
+
+.card-list > .card {
+    height: 20vh;
+    margin: 1%;
+    border-style: solid;
+    border-color: black;
+}
