@@ -16,6 +16,11 @@ class App extends Component {
         Card Lister
         </header>
         <div className='cards-container'>
+          <div className='add-remove-menu'>
+            <button>add card</button>
+            <button>delete card</button>
+            <button>edit card</button>
+          </div>
           <CardList cards={this.state.cards}/>
         </div>
       </div>
