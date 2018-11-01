@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import logo from './logo.svg'
-import CardList from './components/container/CardList'
+import Card from './components/container/Card'
 import AddRemoveMenu from './components/menu/AddRemoveMenu'
 
 import { Modal, Grid } from 'react-bootstrap'
@@ -22,9 +22,9 @@ class App extends Component {
       case 'add card':
        return this.toggleShowCreateForm()
       case 'edit card':
-      return this.editCard(e.target)
+      return this.editCard(e.target.parentElement.parentElement.id)
       case 'delete card':
-       return this.deleteCard(e.target)
+       return this.deleteCard(e.target.parentElement.parentElement.id)
       default:
        return console.log('return nothing')
     }
@@ -58,7 +58,8 @@ class App extends Component {
 
   deleteCard = (key) => {
     console.log('Link to actual card to be deleted to reference id')
-    console.log(key)
+    // debugger
+    this.setState({...this.setState, cards: this.state.cards.filter( word => word !== key )})
   }
 
   handleSubmit = () => {
@@ -78,7 +79,7 @@ class App extends Component {
         </header>
         <div className='cards-container'>
           <AddRemoveMenu handleClick={this.handleClick}/>
-          <CardList handleClick={this.handleClick} cards={this.state.cards} onClickCard={this.onClickCard}/>
+          <Card handleClick={this.handleClick} cards={this.state.cards} onClickCard={this.onClickCard}/>
         </div>
 
         {/* Modals below*/}

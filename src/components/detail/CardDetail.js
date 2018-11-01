@@ -6,10 +6,10 @@ import '../../css/Cards.css'
 const CardDetail = (props) => {
   const { handleClick } = props
   return (
-    <div className='card' /* onClick={(e) => props.onClickCard(e)} */ >
+    <div id={props.id} className={'card'} /* onClick={(e) => props.onClickCard(e)} */ >
       {/* <p>Card detail goes here</p> */}
       <div className='detail'>
-        <p>{props.detail}</p>
+        <span>{props.detail}</span>
       </div>
       <div className='button-group'>
         <Button onClick={(e) => handleClick(e)}>edit card</Button>
