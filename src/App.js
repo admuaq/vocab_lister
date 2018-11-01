@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
 import CardList from './components/container/CardList'
+import AddRemoveMenu from './components/menu/AddRemoveMenu'
 import './css/App.css'
 
 class App extends Component {
@@ -9,6 +10,11 @@ class App extends Component {
     cards: ['apple','pear','orange','kiwi', 'Starfruit',
             'Mango', 'Pineapple', 'Guava','Tangerine','apple','pear','orange','kiwi'] }
 
+  handleClick = e => {
+    console.log(e.target)
+
+  }
+
   render () {
     return (
       <div className='App'>
@@ -16,11 +22,7 @@ class App extends Component {
         Card Lister
         </header>
         <div className='cards-container'>
-          <div className='add-remove-menu'>
-            <button>add card</button>
-            <button>delete card</button>
-            <button>edit card</button>
-          </div>
+          <AddRemoveMenu handleClick={this.handleClick}/>
           <CardList cards={this.state.cards}/>
         </div>
       </div>
