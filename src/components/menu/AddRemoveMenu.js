@@ -10,12 +10,6 @@ const AddRemoveMenu = (props) => {
         <Col xs={6} md={4}>
           <Button onClick={(e) => handleClick(e)}>add card</Button>
         </Col>
-        <Col xs={6} md={4}>
-          <Button>edit card</Button>
-        </Col>
-        <Col xs={6} md={4}>
-          <Button>delete card</Button>
-        </Col>
       </Row>
     </Grid>
   )
