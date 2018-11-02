@@ -1,6 +1,8 @@
 import React from 'react'
 
-import { Modal, Grid } from 'react-bootstrap'
+import { Modal, Grid, FormGroup, Col, Button, ControlLabel, FormControl } from 'react-bootstrap'
+
+// import '../../css/Modal.css'
 
 const NewCardModal = (props) => {
   return (
@@ -11,13 +13,34 @@ const NewCardModal = (props) => {
 
       <Modal.Body>
         <Grid>
-          <label>Word:</label>
-          <input id='word-field' placeholder='Enter word here...' onChange={(e) => props.handleChange(e)} />
-
-          <label>Definition:</label>
-          <input id='definition-field' placeholder='Enter word here...' onChange={(e) => props.handleChange(e)} />
-
-          <button onClick={() => props.handleNewSubmit()}>Submit</button>
+          <FormGroup>
+            <Col xs={12} md={7}>
+              <ControlLabel>Word:</ControlLabel>
+              <br />
+              <FormControl
+                id='word-field'
+                type='text'
+                placeholder='Enter text'
+                onChange={(e) => props.handleChange(e)}
+              />
+            </Col>
+            <Col xs={12} md={7}>
+              <ControlLabel>Definition:</ControlLabel>
+              <br />
+              <FormControl
+                id='definition-field'
+                componentClass='textarea'
+                type='text'
+                placeholder='Enter definition'
+                onChange={(e) => props.handleChange(e)}
+              />
+              <br />
+              <ControlLabel>Characters remaining: {props.charactersRemaining} </ControlLabel>
+            </Col>
+            <Col xs={12} md={7}>
+              <Button onClick={() => props.handleNewSubmit()}>Submit</Button>
+            </Col>
+          </FormGroup>
         </Grid>
       </Modal.Body>
     </Modal>

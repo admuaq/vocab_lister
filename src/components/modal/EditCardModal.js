@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Modal, Grid } from 'react-bootstrap'
+import { Modal, Grid, FormGroup, Col, Button, ControlLabel, FormControl } from 'react-bootstrap'
 
 const EditCardModal = (props) => {
   return (
@@ -11,13 +11,34 @@ const EditCardModal = (props) => {
 
       <Modal.Body>
         <Grid>
-          <label>Word:</label>
-          <input id='word-field' defaultValue={props.selectedCard.word} onChange={(e) => props.handleChange(e)} />
-
-          <label>Definition:</label>
-          <input id='definition-field' defaultValue={props.selectedCard.definition} onChange={(e) => props.handleChange(e)} />
-
-          <button onClick={() => props.handleEditSubmit()}>Submit</button>
+          <FormGroup>
+            <Col xs={12} md={7}>
+              <ControlLabel>Word:</ControlLabel>
+              <br />
+              <FormControl
+                id='word-field'
+                type='text'
+                defaultValue={props.selectedCard.word}
+                onChange={(e) => props.handleChange(e)}
+              />
+            </Col>
+            <Col xs={12} md={7}>
+              <ControlLabel>Definition:</ControlLabel>
+              <br />
+              <FormControl
+                id='definition-field'
+                componentClass='textarea'
+                type='text'
+                defaultValue={props.selectedCard.definition}
+                onChange={(e) => props.handleChange(e)}
+              />
+              <br />
+              <ControlLabel>Characters remaining: {props.charactersRemaining} </ControlLabel>
+            </Col>
+            <Col xs={12} md={7}>
+              <Button onClick={() => props.handleEditSubmit()}>Submit</Button>
+            </Col>
+          </FormGroup>
         </Grid>
       </Modal.Body>
     </Modal>

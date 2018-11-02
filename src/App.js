@@ -18,18 +18,24 @@ class App extends Component {
     showEdit: false,
     word:'',
     definition:'',
-    selectedCard: {}}
+    selectedCard: {},
+    charactersRemaining: 300,
+    wordCount: 300
+   }
 
+  
   handleClick = e => {
     console.log(e.target.innerText)
+    // debugger
+    let action = e.currentTarget.className.split(' ')[0]
 
-    switch (e.target.innerText) {
-      case 'add card':
+    switch (action) {
+      case 'add-card':
        return this.toggleShowCreateForm()
-      case 'edit card':
-      return this.editCard(parseInt(e.target.parentElement.parentElement.id))
-      case 'delete card':
-       return this.deleteCard(parseInt(e.target.parentElement.parentElement.id))
+      case 'edit-card':
+      return this.editCard(parseInt(e.currentTarget.parentElement.parentElement.id))
+      case 'delete-card':
+       return this.deleteCard(parseInt(e.currentTarget.parentElement.parentElement.id))
       default:
        return console.log('return nothing')
     }
@@ -45,7 +51,7 @@ class App extends Component {
       case 'word-field':
        return this.setState( {...this.state, word: e.target.value})
       case 'definition-field':
-       return this.setState( {...this.state, definition: e.target.value})
+       return this.setState( {...this.state, definition: e.target.value, charactersRemaining: this.state.wordCount - e.target.value.length })
       default:
         return
     }
@@ -66,7 +72,7 @@ class App extends Component {
     console.log(key)
     let toEdit = this.state.cards.find(item => item.id === key)
     
-    this.setState( {...this.state, showEdit: !this.state.showEdit, selectedCard: toEdit, word:toEdit.word, definition: toEdit.definition })
+    this.setState( {...this.state, showEdit: !this.state.showEdit, selectedCard: toEdit, word:toEdit.word, definition: toEdit.definition, charactersRemaining: this.state.wordCount - toEdit.definition.length})
   }
 
   deleteCard = (key) => {
@@ -101,11 +107,12 @@ class App extends Component {
 
     array[index] = card
 
-    this.setState( {...this.state, cards: array }, this.toggleShowEditForm )
+    this.setState( {...this.state, cards: array, charactersRemaining: this.state.wordCount - this.state.charactersRemaining }, this.toggleShowEditForm )
   }
 
   render () {
     console.log(this.state.cards)
+
     return (
       <div className='App'>
         <header className='App-header'>
@@ -122,7 +129,8 @@ class App extends Component {
         showModal={this.state.showNew}
         toggleShow={this.toggleShowCreateForm}
         handleChange={this.handleChange}
-        handleNewSubmit={this.handleNewSubmit}/>
+        handleNewSubmit={this.handleNewSubmit}
+        charactersRemaining={this.state.charactersRemaining}/>
         : null}
   
 
@@ -133,7 +141,8 @@ class App extends Component {
         toggleShow={this.toggleShowEditForm}
         handleChange={this.handleChange}
         handleEditSubmit={this.handleEditSubmit}
-        selectedCard={this.state.selectedCard}/>
+        selectedCard={this.state.selectedCard}
+        charactersRemaining={this.state.charactersRemaining}/>
         : null}
 
       </div>

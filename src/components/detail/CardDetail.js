@@ -12,8 +12,8 @@ const CardDetail = (props) => {
         <span>{props.detail.word}</span>
       </div>
       <div className='button-group'>
-        <Button onClick={(e) => handleClick(e)}>edit card</Button>
-        <Button onClick={(e) => handleClick(e)}>delete card</Button>
+        <Button className='edit-card' onClick={(e) => handleClick(e)}> <span className='glyphicon glyphicon-pencil' aria-hidden='true' /> </Button>
+        <Button className='delete-card' onClick={(e) => handleClick(e)}> <span className='glyphicon glyphicon-trash' aria-hidden='true' /> </Button>
       </div>
     </div>
   )
