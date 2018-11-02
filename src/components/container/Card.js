@@ -9,8 +9,12 @@ const Card = (props) => {
       <div className='card-list'>
         {props.cards.map(detail => {
           return (
-            <CardDetail id={detail} key={`item-${props.cards.indexOf(detail)}`} detail={detail}
-              onClickCard={props.onClickCard} handleClick={props.handleClick} />
+            <CardDetail
+              id={detail.id}
+              key={`item-${detail.id}`}
+              detail={detail}
+              handleClick={props.handleClick}
+            />
           )
         })
         }

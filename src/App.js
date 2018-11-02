@@ -1,30 +1,35 @@
 import React, { Component } from 'react'
 
-import logo from './logo.svg'
+// import logo from './logo.svg'
 import Card from './components/container/Card'
 import AddRemoveMenu from './components/menu/AddRemoveMenu'
+import NewCardModal from './components/modal/NewCardModal'
+import EditCardModal from './components/modal/EditCardModal'
 
-import { Modal, Grid } from 'react-bootstrap'
+import cards from './cards.js'
 import './css/App.css'
+
 
 class App extends Component {
 
   state = { 
-    cards: ['apple','pear','orange','kiwi', 'Starfruit',
-            'Mango', 'Pineapple', 'Guava','Tangerine'],
-    show: false,
+    cards: cards,
+    showNew: false,
+    showEdit: false,
     word:'',
-    definition:''}
+    definition:'',
+    selectedCard: {}}
 
   handleClick = e => {
     console.log(e.target.innerText)
+
     switch (e.target.innerText) {
       case 'add card':
        return this.toggleShowCreateForm()
       case 'edit card':
-      return this.editCard(e.target.parentElement.parentElement.id)
+      return this.editCard(parseInt(e.target.parentElement.parentElement.id))
       case 'delete card':
-       return this.deleteCard(e.target.parentElement.parentElement.id)
+       return this.deleteCard(parseInt(e.target.parentElement.parentElement.id))
       default:
        return console.log('return nothing')
     }
@@ -35,7 +40,7 @@ class App extends Component {
   }
 
   handleChange = e => {
-    // debugger
+    
     switch (e.target.id){
       case 'word-field':
        return this.setState( {...this.state, word: e.target.value})
@@ -48,30 +53,59 @@ class App extends Component {
 
   toggleShowCreateForm = () => {
     console.log('Loads modal form')
-    this.setState( {...this.state, show: !this.state.show, word:'', definition: '' })
+    this.setState( {...this.state, showNew: !this.state.showNew, word:'', definition: '', selectedCard: {} })
+  }
+
+  toggleShowEditForm = () => {
+    console.log('Loads modal form')
+    this.setState( {...this.state, showEdit: !this.state.showEdit, word:'', definition: '', selectedCard: {} })
   }
 
   editCard = (key) => {
     console.log('Link to actual card to be edited to reference id')
     console.log(key)
+    let toEdit = this.state.cards.find(item => item.id === key)
+    
+    this.setState( {...this.state, showEdit: !this.state.showEdit, selectedCard: toEdit, word:toEdit.word, definition: toEdit.definition })
   }
 
   deleteCard = (key) => {
     console.log('Link to actual card to be deleted to reference id')
-    // debugger
-    this.setState({...this.setState, cards: this.state.cards.filter( word => word !== key )})
+    
+    this.setState({...this.setState, cards: this.state.cards.filter( card => card.id !== key )})
   }
 
-  handleSubmit = () => {
+  handleNewSubmit = () => {
     if (this.state.word === '' || this.state.definition === ''){
      return
     }
     else {
-      this.setState( {...this.state, cards: [...this.state.cards, this.state.word] }, this.toggleShowCreateForm )
+      let newCard = {id: this.state.cards.length + 1, word:'', definition:''}
+
+      newCard.word = this.state.word
+      newCard.definition = this.state.definition
+
+      this.setState( {...this.state, cards: [...this.state.cards, newCard] }, this.toggleShowCreateForm )
     }
   }
 
+  handleEditSubmit = () => {
+    let card = this.state.selectedCard
+
+    
+    let array = [...this.state.cards]
+    let index = array.findIndex( item => item.id === card.id)
+
+    card.word = this.state.word
+    card.definition = this.state.definition
+
+    array[index] = card
+
+    this.setState( {...this.state, cards: array }, this.toggleShowEditForm )
+  }
+
   render () {
+    console.log(this.state.cards)
     return (
       <div className='App'>
         <header className='App-header'>
@@ -82,27 +116,27 @@ class App extends Component {
           <Card handleClick={this.handleClick} cards={this.state.cards} onClickCard={this.onClickCard}/>
         </div>
 
-        {/* Modals below*/}
-        <Modal show={this.state.show} onHide={this.toggleShowCreateForm}>
-          <Modal.Header closeButton>
-            <Modal.Title>Create new card</Modal.Title>
-          </Modal.Header>
+        {/* Modal for adding new card */}
+        {this.state.showNew ? 
+        <NewCardModal 
+        showModal={this.state.showNew}
+        toggleShow={this.toggleShowCreateForm}
+        handleChange={this.handleChange}
+        handleNewSubmit={this.handleNewSubmit}/>
+        : null}
+  
 
-          <Modal.Body>
-            <Grid>
-              <label>Word:</label>
-              <input id='word-field'placeholder='Enter word here...' onChange={ (e)=> this.handleChange(e) }></input>
-
-              <label>Definition:</label>
-              <input id='definition-field' placeholder='Enter word here...' onChange={ (e)=> this.handleChange(e) }></input>
-
-              <button onClick={()=> this.handleSubmit()}>Submit</button>
-            </Grid>
-          </Modal.Body>
-        </Modal>
+        {/* Modal for edit card */}
+        {this.state.showEdit ? 
+        <EditCardModal 
+        showModal={this.state.showEdit}
+        toggleShow={this.toggleShowEditForm}
+        handleChange={this.handleChange}
+        handleEditSubmit={this.handleEditSubmit}
+        selectedCard={this.state.selectedCard}/>
+        : null}
 
       </div>
-
     )
   }
 }
