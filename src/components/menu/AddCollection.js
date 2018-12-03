@@ -1,18 +1,18 @@
 import React from 'react'
 import { Button, Grid, Row, Col } from 'react-bootstrap'
 
-const AddRemoveMenu = (props) => {
+const AddCollection = (props) => {
   const { handleClick } = props
 
   return (
     <Grid>
-      <Row className='add-remove-menu'>
+      <Row className='new-collection'>
         <Col xs={6} md={4}>
-          <Button className='add-card' onClick={(e) => handleClick(e)}>add card</Button>
+          <Button className='new-collection' onClick={(e) => handleClick(e)}>new collection</Button>
         </Col>
       </Row>
     </Grid>
   )
 }
 
-export default AddRemoveMenu
+export default AddCollection

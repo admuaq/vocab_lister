@@ -1,28 +1,45 @@
 import React, { Component } from 'react'
 
+import API from './API.js'
 // import logo from './logo.svg'
 import Card from './components/container/Card'
 import AddRemoveMenu from './components/menu/AddRemoveMenu'
+
+import AddCollection from './components/menu/AddCollection'
+import EditCollection from './components/menu/EditCollection'
+import SelectCollection from './components/menu/SelectCollection'
+
 import NewCardModal from './components/modal/NewCardModal'
 import EditCardModal from './components/modal/EditCardModal'
+import NewCollectionModal from './components/modal/NewCollectionModal'
+import EditCollectionModal from './components/modal/EditCollectionModal'
 
-import cards from './cards.js'
+// import cards from './cards.js'
 import './css/App.css'
 
 
 class App extends Component {
 
   state = { 
-    cards: cards,
+    collection: {},
+    userCollections: [],
+    cards: [],
     showNew: false,
     showEdit: false,
+    showEditCollection: false,
+    showNewCollection: false,
     word:'',
     definition:'',
     selectedCard: {},
+    collectionSelected: false,
     charactersRemaining: 300,
     wordCount: 300
-   }
+  }
 
+  fetchData = () => {
+    API.getCardList().then( data => this.setState({...this.state, cards: data}))
+    API.getUsersCollections().then( data => this.setState({...this.state, userCollections: data}))
+  }
   
   handleClick = e => {
     console.log(e.target.innerText)
@@ -36,6 +53,10 @@ class App extends Component {
       return this.editCard(parseInt(e.currentTarget.parentElement.parentElement.id))
       case 'delete-card':
        return this.deleteCard(parseInt(e.currentTarget.parentElement.parentElement.id))
+      case 'new-collection':
+       return this.toggleShowCreateNewCollectionForm()
+      case 'edit-collection':
+       return this.toggleShowEditCollectionForm()
       default:
        return console.log('return nothing')
     }
@@ -58,13 +79,23 @@ class App extends Component {
   }
 
   toggleShowCreateForm = () => {
-    console.log('Loads modal form')
+    console.log('Opens/Closes Create Card modal form')
     this.setState( {...this.state, showNew: !this.state.showNew, word:'', definition: '', selectedCard: {} })
   }
 
   toggleShowEditForm = () => {
-    console.log('Loads modal form')
+    console.log('Closes Edit Card modal form')
     this.setState( {...this.state, showEdit: !this.state.showEdit, word:'', definition: '', selectedCard: {} })
+  }
+
+  toggleShowCreateNewCollectionForm = () => {
+    console.log('Opens/Closes Create New Collection modal form')
+    this.setState( {...this.state, showNewCollection: !this.state.showNewCollection })
+  }
+
+  toggleShowEditCollectionForm = () => {
+    console.log('Opens/Closes Create New Collection modal form')
+    this.setState( {...this.state, showEditCollection: !this.state.showEditCollection })
   }
 
   editCard = (key) => {
@@ -77,8 +108,14 @@ class App extends Component {
 
   deleteCard = (key) => {
     console.log('Link to actual card to be deleted to reference id')
-    
-    this.setState({...this.setState, cards: this.state.cards.filter( card => card.id !== key )})
+    if (this.state.collection !== ''){
+      // debugger
+      API.deleteCardFromCollection(key, this.state.collection)
+      .then( collection => this.setState({...this.setState, cards: collection.cards}))
+    }
+    else {
+      this.setState({...this.setState, cards: this.state.cards.filter( card => card.id !== key )})
+    }
   }
 
   handleNewSubmit = () => {
@@ -86,6 +123,7 @@ class App extends Component {
      return
     }
     else {
+      
       let newCard = {id: this.state.cards.length + 1, word:'', definition:''}
 
       newCard.word = this.state.word
@@ -110,16 +148,80 @@ class App extends Component {
     this.setState( {...this.state, cards: array, charactersRemaining: this.state.wordCount - this.state.charactersRemaining }, this.toggleShowEditForm )
   }
 
+  handleSubmitNewCollection = (name) => {
+    if (name === '') return;
+
+    API.newCollection(name)
+    .then( data => 
+      this.setState(
+        {...this.state, 
+          userCollections: data, 
+          showNewCollection: !this.state.showNewCollection
+        }))
+  }
+
+  handleEditCollection = (newName, oldName, collectionID) => {
+    console.log('Submits Changes to Collection')
+    console.log(newName, oldName, collectionID)
+
+    let editStateCollection = this.state.collection
+    editStateCollection.name = newName
+
+    // debugger
+
+    API.submitEditCollection(newName, oldName)
+    .then( data => 
+      this.setState({...this.state, 
+        collection: editStateCollection,
+        showEditCollection: !this.state.showEditCollection
+      }, this.onEditCollectionName()))
+  }
+
+  onEditCollectionName = () => {
+    API.getUsersCollections().then( data => this.setState({...this.state, userCollections: data}))
+  }
+
+  handleSelectCollection = (name) => {
+    if (name === 'Show all cards') {
+
+      API.getCardList()
+      .then( data => this.setState({ ...this.state, collection: '', cards: data, collectionSelected: false }) )
+
+    }
+    else {
+      API.getCollection(name)
+      .then( collection => this.setState({ ...this.state, collection: collection, cards: collection.cards, collectionSelected: true }))
+    }
+  }
+
+  componentDidMount(){
+    this.fetchData()
+  }
+
+
   render () {
-    console.log(this.state.cards)
+    // console.log(this.state.cards)
 
     return (
       <div className='App'>
         <header className='App-header'>
         Vocab Lister
         </header>
+        <div id='menu-container'>
+        {/* Collection Menu options Row */}
+          <div className='collection-option-menu'>
+            <AddCollection handleClick={this.handleClick}/>
+            {this.state.collectionSelected ? <EditCollection handleClick={this.handleClick}/> : null}
+            <SelectCollection
+              collections={this.state.userCollections}
+              handleSelectCollection={this.handleSelectCollection}/>
+          </div>
+        {/* Card Menu options Row */}
+          <div className='card-option-menu'>
+            <AddRemoveMenu handleClick={this.handleClick}/>
+          </div>
+        </div>
         <div className='cards-container'>
-          <AddRemoveMenu handleClick={this.handleClick}/>
           <Card handleClick={this.handleClick} cards={this.state.cards} onClickCard={this.onClickCard}/>
         </div>
 
@@ -145,6 +247,22 @@ class App extends Component {
         charactersRemaining={this.state.charactersRemaining}/>
         : null}
 
+        {/* Modal for new collection */}
+        {this.state.showNewCollection ? 
+        <NewCollectionModal 
+        showModal={this.state.showNewCollection}
+        toggleShow={this.toggleShowCreateNewCollectionForm}
+        handleSubmit={this.handleSubmitNewCollection} />
+        : null}
+
+        {/* Modal for Edit collection */}
+        {this.state.showEditCollection ? 
+        <EditCollectionModal 
+        selectedCollection={this.state.collection}
+        showModal={this.state.showEditCollection}
+        toggleShow={this.toggleShowEditCollectionForm}
+        handleSubmit={this.handleEditCollection} />
+        : null}
       </div>
     )
   }

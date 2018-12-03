@@ -27,11 +27,21 @@
   color: #61dafb;
 }
 
-.add-remove-menu {
-  display: flex;
+#menu-container > .div {
+  display: block;
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
+}
+
+.collection-option-menu {
+  height: inherit;
+  display: flex;
+  padding: 1%;
+}
+
+.mcard-option-menu {
+  display: flex;
 }
 
 /* @keyframes App-logo-spin {
